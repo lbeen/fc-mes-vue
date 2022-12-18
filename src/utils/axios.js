@@ -1,35 +1,49 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import router from '@/router/index'
-import { localGet } from './index'
+import {getLocalStorage, removeLocalStorage} from './index'
+// import {useRouter} from 'vue-router'
 // import config from '~/config'
 
-
 // 这边由于后端没有区分测试和正式，姑且都写成一个接口。
-// axios.defaults.baseURL = config[import.meta.env.MODE].baseUrl
+axios.defaults.baseURL = 'api'
 // 携带 cookie，对目前的项目没有什么作用，因为我们是 token 鉴权
-axios.defaults.withCredentials = true
-// 请求头，headers 信息
-axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
-axios.defaults.headers['token'] = localGet('token') || ''
-// 默认 post 请求，使用 application/json 形式
-axios.defaults.headers.post['Content-Type'] = 'application/json'
-
-// 请求拦截器，内部根据返回值，重新组装，统一管理。
-axios.interceptors.response.use(res => {
-  if (typeof res.data !== 'object') {
-    ElMessage.error('服务端异常！')
-    return Promise.reject(res)
-  }
-  if (res.data.resultCode != 200) {
-    if (res.data.message) ElMessage.error(res.data.message)
-    if (res.data.resultCode == 419) {
-      router.push({ path: '/login' })
+// axios.defaults.withCredentials = true
+// // 请求头，headers 信息
+// axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
+// axios.defaults.headers['token'] = getLocalStorage('token') || ''
+// // 默认 post 请求，使用 application/json 形式
+// axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.interceptors.request.use(config => {
+        config.headers.Authorization = getLocalStorage('token') || ''
+        return config
+    },
+    error => Promise.reject(error)
+)
+axios.interceptors.response.use(response => {
+    const result = response.data
+    if (result.code === 0) {
+        if (result.message) {
+            ElMessage.success(result.message)
+        }
+        return Promise.resolve(result.data)
     }
-    return Promise.reject(res.data)
-  }
-
-  return res.data.data
+    if (result.message) {
+        ElMessage.error(result.message)
+    }
+    return Promise.reject(response)
+}, error => {
+    const status = error.response.status
+    if (status === 401) {
+        removeLocalStorage()
+        ElMessageBox.alert('未登录或者登录过期，请重新登录', 'Title', {
+            confirmButtonText: 'OK',
+            callback: () => {
+                router.replace('/login')
+            }
+        })
+    }
+    return Promise.reject(error)
 })
 
 export default axios

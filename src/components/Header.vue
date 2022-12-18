@@ -32,7 +32,7 @@
 import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from '@/utils/axios'
-import { localRemove, pathMap } from '@/utils'
+import { removeLocalStorage} from '@/utils'
 
 const router = useRouter()
 const state = reactive({
@@ -49,26 +49,26 @@ const state = reactive({
 })
 // 获取用户信息
 const getUserInfo = async () => {
-  const userInfo = await axios.get('/adminUser/profile')
-  state.userInfo = userInfo
+  // const userInfo = await axios.get('/adminUser/profile')
+  state.userInfo = {}
 }
 // 退出登录
 const logout = () => {
   axios.delete('/logout').then(() => {
     // 退出之后，将本地保存的 token  清理掉
-    localRemove('token')
+      removeLocalStorage('token')
     // 回到登录页
     router.push({ path: '/login' })
   })
 }
 
-router.afterEach((to) => {
-  const { id } = to.query
-  state.name = pathMap[to.name]
-  // level2 和 level3 需要展示返回icon
-  console.log('to.name', to.name)
-  state.hasBack = ['level2', 'level3'].includes(to.name)
-})
+// router.afterEach((to) => {
+//   const { id } = to.query
+//   state.name = pathMap[to.name]
+//   // level2 和 level3 需要展示返回icon
+//   console.log('to.name', to.name)
+//   state.hasBack = ['level2', 'level3'].includes(to.name)
+// })
 
 // 返回方法
 const back = () => {
