@@ -54,13 +54,14 @@ const state = reactive({
 const submitForm = async () => {
     loginForm.value.validate((valid) => {
         if (valid) {
-            var promise = axios.post('/system/user/login', {
+            axios.post('/system/user/login', {
                 username: state.ruleForm.username,
                 password: state.ruleForm.password
-            })
-            promise.then(data => {
+            }).then(data => {
                 setLocalStorage('token', data.token)
                 window.location.href = '/'
+            }).catch(error => {
+                
             })
 
             // window.location.href = '/'
