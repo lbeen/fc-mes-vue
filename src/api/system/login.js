@@ -1,6 +1,5 @@
-import axios from 'axios'
-import {ajaxGet, ajaxPost} from '@/api/axios'
+import {ajaxPost} from '@/api/api'
 
-export function login(param, callback) {
+export function doLogin(param, callback) {
     ajaxPost('cockpit/lifetimeGt150', param, callback)
 }

@@ -23,9 +23,9 @@
 </template>
 
 <script setup>
-import axios from '@/utils/axios'
+import {doLogin} from '@/api/system/login'
+import {setToken, setUserInfo} from '@/utils/auth'
 import {reactive, ref} from 'vue'
-import {setLocalStorage} from '@/utils'
 
 const loginForm = ref(null)
 const state = reactive({
@@ -54,19 +54,15 @@ const state = reactive({
 const submitForm = async () => {
     loginForm.value.validate((valid) => {
         if (valid) {
-            axios.post('/system/user/login', {
+            doLogin({
                 username: state.ruleForm.username,
                 password: state.ruleForm.password
-            }).then(data => {
-                setLocalStorage('token', data.token)
+            }, data => {
+                setToken(data.token)
+                setUserInfo(data.user)
                 window.location.href = '/'
-            }).catch(error => {
-                
             })
-
-            // window.location.href = '/'
         } else {
-            console.log('error submit!!')
             return false
         }
     })
