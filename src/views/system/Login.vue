@@ -6,16 +6,16 @@
                     <div class="title">MES</div>
                 </div>
             </div>
-            <el-form label-position="top" :rules="state.rules" :model="state.ruleForm" ref="loginForm"
+            <el-form label-position="top" :rules="formData.rules" :model="formData.data" ref="form"
                      class="login-form">
                 <el-form-item label="账号" prop="username">
-                    <el-input type="text" v-model.trim="state.ruleForm.username" size="large"></el-input>
+                    <el-input type="text" v-model.trim="formData.data.username" size="large"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model.trim="state.ruleForm.password" size="large"></el-input>
+                    <el-input type="password" v-model.trim="formData.data.password" size="large"></el-input>
                 </el-form-item>
                 <el-form-item style="margin-top: 10px">
-                    <el-button style="width: 100%" type="primary" @click="submitForm" size="large">立即登录</el-button>
+                    <el-button style="width: 100%" type="primary" @click="submit" size="large">立即登录</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -27,48 +27,39 @@ import {doLogin} from '@/api/system/login'
 import {setToken, setUserInfo} from '@/utils/auth'
 import {reactive, ref} from 'vue'
 
-const loginForm = ref(null)
-const state = reactive({
-    ruleForm: {
+const formData = reactive({
+    data: {
         username: '',
         password: ''
     },
-    checked: true,
     rules: {
-        username: [
-            {
-                required: 'true',
-                message: '账户不能为空',
-                trigger: 'blur'
-            }
-        ],
-        password: [
-            {
-                required: 'true',
-                message: '密码不能为空',
-                trigger: 'blur'
-            }
-        ]
+        username: [{
+            required: true,
+            message: '账户不能为空',
+            trigger: 'blur'
+        }],
+        password: [{
+            required: true,
+            message: '密码不能为空',
+            trigger: 'blur'
+        }]
     }
 })
-const submitForm = async () => {
-    loginForm.value.validate((valid) => {
+
+const form = ref(null)
+const submit = () => {
+    form.value.validate((valid) => {
+        debugger
         if (valid) {
-            doLogin({
-                username: state.ruleForm.username,
-                password: state.ruleForm.password
-            }, data => {
+            doLogin(formData.data, data => {
                 setToken(data.token)
                 setUserInfo(data.user)
                 window.location.href = '/'
             })
-        } else {
-            return false
+            return true
         }
+        return false
     })
-}
-const resetForm = () => {
-    loginForm.value.resetFields()
 }
 </script>
 
