@@ -4,23 +4,23 @@ import {ElMessage} from 'element-plus'
 /**
  * GET获取数据
  */
-export function ajaxGet(url, params, success, error) {
-    handlePromise(instance.get(url, {params}), success, error)
+export function ajaxGet(url, params, callback, errorCallback) {
+    handlePromise(instance.get(url, {params}), callback, errorCallback)
 }
 
 /**
  * post提交数据
  */
-export function ajaxPost(url, data, success, error) {
-    handlePromise(instance.post(url, data), success, error)
+export function ajaxPost(url, data, callback, errorCallback) {
+    handlePromise(instance.post(url, data), callback, errorCallback)
 }
 
-function handlePromise(promise, success, error) {
+function handlePromise(promise, callback, errorCallback) {
     promise.then(response => {
         const result = response.data
         if (!result) {
-            if (error) {
-                error(result)
+            if (errorCallback) {
+                errorCallback(result)
             }
             ElMessage.error('系统错误')
             return
@@ -29,20 +29,21 @@ function handlePromise(promise, success, error) {
             if (result.message) {
                 ElMessage.success(result.message)
             }
-            if (success) {
-                success(result.data)
+            if (callback) {
+                callback(result.data)
             }
             return
         }
         if (result.message) {
             ElMessage.error(result.message)
         }
-        if (error) {
-            error(result)
+        if (errorCallback) {
+            errorCallback(result)
         }
     }).catch(error => {
-        if (error) {
-            error()
+        console.log(error)
+        if (errorCallback) {
+            errorCallback()
         }
         ElMessage.error('系统错误')
     })

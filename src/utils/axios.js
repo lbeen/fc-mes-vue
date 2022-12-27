@@ -34,7 +34,7 @@ instance.interceptors.response.use(response => {
     }
 
     refreshLastTime()
-    return Promise.reject(response)
+    return Promise.resolve(response)
 }, error => {
     const status = error.response.status
     if (status === 401) {
