@@ -9,3 +9,14 @@ export function getLocalStorage(key) {
 export function removeLocalStorage(key) {
     window.localStorage.removeItem(key)
 }
+
+export function localGet(key) {
+    window.localStorage.removeItem(key)
+}
+
+export function uploadImgServer(key) {
+    window.localStorage.removeItem(key)
+}
+export function uploadImgsServer(key) {
+    window.localStorage.removeItem(key)
+}

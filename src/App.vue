@@ -10,8 +10,8 @@
 <script setup>
 import {reactive} from 'vue'
 import {useRouter} from 'vue-router'
-import {getLocalStorage} from '@/utils'
 import MenuPage from '@/components/app/menu-page.vue'
+import {getToken} from '@/utils/auth'
 
 const noMenu = ['/login']
 const router = useRouter()
@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
         next()
     } else {
         // 如果不是 /login，判断是否有 token
-        if (!getLocalStorage('token')) {
+        if (!getToken()) {
             // 如果没有，则跳至登录页面
             next({path: '/login'})
         } else {

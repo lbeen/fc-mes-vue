@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {getToken, removeToken, refreshLastTime, checkLoginExpire, setToken} from './auth'
+import {getToken, removeToken, refreshLastTime, checkLoginExpire, setToken, getUserInfo} from './auth'
 import {ElMessageBox} from 'element-plus'
 import router from '@/router'
 
@@ -21,19 +21,19 @@ instance.interceptors.response.use(response => {
             jumpToLogin()
             return
         }
-        return instance.post('/system/refreshToken').then(response2 => {
-            const token = response2.data.token
-            if (!token) {
-                jumpToLogin()
-                return
+        return instance.post('/system/refreshToken', getUserInfo()).then(response2 => {
+            const token = response2.data.data
+            if (token) {
+                setToken(token)
+                response.config.headers.token = token
+                return instance(response.config)
             }
 
-            setToken(token)
-            return instance(response.config)
+            jumpToLogin()
         }).catch(jumpToLogin)
     }
 
-    refreshLastTime()
+    refreshLastTime(response.headers.date)
     return Promise.resolve(response)
 }, error => {
     const status = error.response.status

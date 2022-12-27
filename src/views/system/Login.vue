@@ -58,10 +58,9 @@ const submitForm = async () => {
                 username: state.ruleForm.username,
                 password: state.ruleForm.password
             }, data => {
-                console.log(data)
                 setToken(data.token)
                 setUserInfo(data.user)
-                // window.location.href = '/'
+                window.location.href = '/'
             })
         } else {
             return false
