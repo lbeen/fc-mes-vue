@@ -1,5 +1,5 @@
 import instance from '@/utils/axios'
-import {ElMessage} from 'element-plus'
+import Tips from '@/utils/Tips'
 
 /**
  * GET获取数据
@@ -22,12 +22,12 @@ function handlePromise(promise, callback, errorCallback) {
             if (errorCallback) {
                 errorCallback(result)
             }
-            ElMessage.error('系统错误')
+            Tips.error('系统错误')
             return
         }
         if (result.code === 0) {
             if (result.message) {
-                ElMessage.success(result.message)
+                Tips.success(result.message)
             }
             if (callback) {
                 callback(result.data)
@@ -35,7 +35,7 @@ function handlePromise(promise, callback, errorCallback) {
             return
         }
         if (result.message) {
-            ElMessage.error(result.message)
+            Tips.error(result.message)
         }
         if (errorCallback) {
             errorCallback(result)
@@ -45,6 +45,6 @@ function handlePromise(promise, callback, errorCallback) {
         if (errorCallback) {
             errorCallback()
         }
-        ElMessage.error('系统错误')
+        Tips.error('系统错误')
     })
 }

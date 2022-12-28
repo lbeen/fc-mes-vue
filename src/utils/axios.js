@@ -2,6 +2,7 @@ import axios from 'axios'
 import {getToken, removeToken, refreshLastTime, checkLoginExpire, setToken, getUserInfo} from './auth'
 import {ElMessageBox} from 'element-plus'
 import router from '@/router'
+import Tips from '@/utils/Tips'
 
 const instance = axios.create({
     baseURL: '/api',
@@ -44,12 +45,9 @@ instance.interceptors.response.use(response => {
     return Promise.reject(error)
 })
 
-function jumpToLogin(){
+function jumpToLogin() {
     removeToken()
-    ElMessageBox.alert('未登录或者登录过期，请重新登录', 'Title', {
-        confirmButtonText: 'OK',
-        callback: () => router.replace('/login')
-    })
+    Tips.alert('未登录或者登录过期，请重新登录', () => router.replace('/login'))
 }
 
 export default instance

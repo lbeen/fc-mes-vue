@@ -42,6 +42,7 @@
 <script setup>
 import {getUserInfo, removeToken} from '@/utils/auth'
 import {reactive, ref} from 'vue'
+import {changePassword} from '@/api/system/user'
 
 const userInfo = getUserInfo() || {}
 
@@ -74,9 +75,7 @@ const form = ref(null)
 const submit = () => {
     form.value.validate(valid => {
         if (valid) {
-            console.log(formData.data)
-        } else {
-            return false
+            changePassword(formData.data, () => showChangePassword.value = false)
         }
     })
 }

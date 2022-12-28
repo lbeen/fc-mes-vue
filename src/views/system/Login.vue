@@ -48,17 +48,14 @@ const formData = reactive({
 
 const form = ref(null)
 const submit = () => {
-    form.value.validate((valid) => {
-        debugger
+    form.value.validate(valid => {
         if (valid) {
             doLogin(formData.data, data => {
                 setToken(data.token)
                 setUserInfo(data.user)
                 window.location.href = '/'
             })
-            return true
         }
-        return false
     })
 }
 </script>
