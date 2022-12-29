@@ -1,8 +1,8 @@
 <template>
     <el-container class="container">
-        <left-menu/>
+        <left-menu v-show="menuVisible"/>
         <el-container class="content">
-            <Header/>
+            <Header :change-menu-visible="changeMenuVisible"/>
             <div class="main">
                 <router-view/>
             </div>
@@ -14,6 +14,14 @@
 <script setup>
 import LeftMenu from '@/components/app/left-menu.vue'
 import Header from '@/components/Header.vue'
+import {ref} from 'vue'
+
+
+const menuVisible = ref(true)
+const changeMenuVisible = () => {
+    menuVisible.value = !menuVisible.value
+    return menuVisible.value
+}
 </script>
 
 <style scoped>

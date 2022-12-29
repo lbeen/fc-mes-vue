@@ -10,8 +10,9 @@
             </el-table>
         </el-row>
         <el-row style="padding: 5px;text-align: right;width: 100%">
-            <el-pagination small :page-sizes="[10, 50, 100, 200]" :page-size="tableData.pageSize" :current-page="tableData.page"
-                            :total="tableData.count" :disabled="tableData.pageDisabled"
+            <el-pagination small :page-sizes="[10, 50, 100, 200]" :page-size="tableData.pageSize"
+                           :current-page="tableData.page"
+                           :total="tableData.count" :disabled="tableData.pageDisabled"
                            @size-change="sizeChange" @current-change="currentChange" @prev-click="prevClick"
                            @next-click="nextClick">
             </el-pagination>
@@ -95,3 +96,32 @@ const nextClick = (page) => {
 
 refresh()
 </script>
+
+<style scoped>
+.el-table__body tr, .el-table__body td {
+    padding: 0;
+    height: 54px;
+}
+
+.el-table th,
+.el-table tr,
+.el-table td {
+    background-color: #063570;
+    border: 0;
+    color: #93dcfe;
+    font-size: 24px;
+    height: 5px;
+    font-family: Source Han Sans CN Normal, Source Han Sans CN Normal-Normal;
+    font-weight: Normal;
+}
+
+.el-table::before {
+    height: 0px;
+}
+
+
+.el-table__header-wrapper {
+    border: solid 1px #04c2ed;
+    box-sizing: border-box;
+}
+</style>

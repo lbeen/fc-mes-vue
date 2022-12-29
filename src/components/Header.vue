@@ -1,13 +1,17 @@
 <template>
     <div class="header">
-        <div class="left">
-            <span style="font-size: 20px">测试</span>
+        <div>
+            <el-icon class="menu-icon" @click="menuIconClick">
+                <fold v-show="showFold"/>
+                <expand v-show="!showFold"/>
+            </el-icon>
+            <span class="page-name-span">测试</span>
         </div>
-        <div class="right">
+        <div>
             <el-dropdown>
-                <span class="el-dropdown-link">
+                <span>
                     {{ userInfo.username || '' }}
-                  <el-icon class="el-icon--right">
+                  <el-icon>
                     <arrow-down/>
                   </el-icon>
                 </span>
@@ -43,6 +47,15 @@
 import {getUserInfo, removeToken} from '@/utils/auth'
 import {reactive, ref} from 'vue'
 import {changePassword} from '@/api/system/user'
+
+const props = defineProps({
+    changeMenuVisible: Function
+})
+
+const showFold = ref(true)
+const menuIconClick = () => {
+    showFold.value = props.changeMenuVisible()
+}
 
 const userInfo = getUserInfo() || {}
 
@@ -89,5 +102,22 @@ const submit = () => {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+}
+
+.menu-icon {
+    font-size: 35px;
+    margin-left: -10px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.menu-icon:hover {
+    color: #409eff;
+}
+
+.page-name-span {
+    vertical-align: middle;
+    margin-left: 10px;
+    font-size: 20px;
 }
 </style>

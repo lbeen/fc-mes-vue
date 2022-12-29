@@ -1,24 +1,25 @@
 <template>
     <page-table :data-fun="dataFun" :param-fun="paramFun" query-on-load>
         <template #query="scope">
-            <el-form :inline="true" class="demo-form-inline">
+            <el-form inline class="demo-form-inline">
                 <el-form-item label="时间">
                     <el-date-picker v-model="param.time" type="datetimerange" unlink-panels
                                     value-format="YYYY-MM-DD HH:mm:ss" range-separator="至"
                                     start-placeholder="开始时间" end-placeholder="结束时间">
                     </el-date-picker>
                 </el-form-item>
-                <!--                <el-form-item label="车间">-->
-                <!--                    <el-select v-model="param.workshop" placeholder="请选择车间">-->
-                <!--                        <el-option v-for="item in workshops" :key="item" :label="item" :value="item"></el-option>-->
-                <!--                    </el-select>-->
-                <!--                </el-form-item>-->
-                <!--                <el-form-item label="工单号">-->
-                <!--                    <el-input v-model="param.orderNumber" placeholder="请输入工单号"></el-input>-->
-                <!--                </el-form-item>-->
-                <!--                <el-form-item label="晶编">-->
-                <!--                    <el-input v-model="param.crystalNumber" placeholder="请输入晶编"></el-input>-->
-                <!--                </el-form-item>-->
+                <el-form-item label="级别">
+                    <el-select v-model="param.level" placeholder="请选择级别" clearable>
+                        <el-option v-for="item in levels" :key="item.value" :label="item.label"
+                                   :value="item.value"/>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="用户">
+                    <el-input v-model="param.user" placeholder="请输入用户" clearable/>
+                </el-form-item>
+                <el-form-item label="内容">
+                    <el-input v-model="param.content" placeholder="请输入内容" clearable/>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="scope.query">查询</el-button>
                 </el-form-item>
@@ -40,24 +41,35 @@ import PageTable from '@/components/app/page-table.vue'
 import {queryLogPage} from '@/api/system/log'
 import {reactive} from 'vue'
 import Tips from '@/utils/Tips'
+import {format0OClock, formatDateTime} from '@/utils/date'
 
-new Date().
 const param = reactive({
-    startTime: '2022-12-28 00:00:00',
-    endTime: '2022-12-30 00:00:00',
     level: '',
     user: '',
     content: '',
-    time: ''
+    time: [format0OClock(new Date()), formatDateTime(new Date())]
 })
+
+const levels = [{
+    value: 0,
+    label: '信息',
+}, {
+    value: 1,
+    label: '错误',
+}]
 
 const dataFun = queryLogPage
 const paramFun = () => {
-    console.log(param.time)
-    if (!param.startTime || !param.endTime) {
+    if (!param.time[0] || !param.time[1]) {
         Tips.error('开始结束时间不能为空')
         return
     }
-    return param
+    return {
+        startTime: param.time[0],
+        endTime: param.time[1],
+        level: param.level,
+        user: param.user,
+        content: param.content
+    }
 }
 </script>
