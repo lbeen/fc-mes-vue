@@ -1,68 +1,97 @@
 <template>
-    <el-table
-        :load="state.loading"
-        :data="state.tableData"
-        tooltip-effect="dark"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-    >
-        <slot name='column'></slot>
-    </el-table>
-    <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="state.total"
-        :page-size="state.pageSize"
-        :current-page="state.currentPage"
-        @current-change="changePage"
-    />
+    <el-row style="padding: 5px">
+        <el-row style="width: 100%">
+            <slot name="query" :query="refresh"></slot>
+        </el-row>
+        <el-row style="width: 100%">
+            <el-table :data="tableData.list" stripe :max-height="tableData.tableMaxHeight"
+                      :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+                <slot name="column"></slot>
+            </el-table>
+        </el-row>
+        <el-row style="padding: 5px;text-align: right;width: 100%">
+            <el-pagination small :page-sizes="[10, 50, 100, 200]" :page-size="tableData.pageSize" :current-page="tableData.page"
+                            :total="tableData.count" :disabled="tableData.pageDisabled"
+                           @size-change="sizeChange" @current-change="currentChange" @prev-click="prevClick"
+                           @next-click="nextClick">
+            </el-pagination>
+        </el-row>
+    </el-row>
 </template>
 
 <script setup>
-import { onMounted, reactive, getCurrentInstance } from 'vue'
-import axios from '@/utils/axios'
+import {reactive} from 'vue'
 
 const props = defineProps({
-    action: String
-})
-const app = getCurrentInstance()
-const { goTop } = app.appContext.config.globalProperties
-const state = reactive({
-    loading: false,
-    tableData: [], // 数据列表
-    total: 0, // 总条数
-    currentPage: 1, // 当前页
-    pageSize: 10, // 分页大小
-    multipleSelection: []
-})
-onMounted(() => {
-    getList()
+    dataFun: {
+        type: Function
+    },
+    paramFun: {
+        type: Function
+    },
+    queryOnLoad: {
+        type: Boolean,
+        default: false
+    }
 })
 
-const getList = () => {
-    state.loading = true
-    axios.get(props.action, {
-        params: {
-            pageNumber: state.currentPage,
-            pageSize: state.pageSize
-        }
-    }).then(res => {
-        state.tableData = res.list
-        state.total = res.totalCount
-        state.currentPage = res.currPage
-        state.loading = false
-        goTop && goTop() // 回到顶部
-    })
+const tableData = reactive({
+    tableMaxHeight: 500,
+    page: 1,
+    pageSize: 50,
+    pageDisabled: false,
+    queryDisabled: false,
+
+    count: 0,
+    list: []
+})
+
+const refresh = () => {
+    if (tableData.queryDisabled) {
+        return
+    }
+    changeQueryDisabled(true)
+
+    const param = props.paramFun()
+    if (!param) {
+        changeQueryDisabled(false)
+        return
+    }
+    param.page = tableData.page
+    param.pageSize = tableData.pageSize
+
+    props.dataFun(param, data => {
+        tableData.count = data.count
+        tableData.list = data.list
+        changeQueryDisabled(false)
+    }, () => changeQueryDisabled(false))
 }
 
-const handleSelectionChange = (val) => {
-    state.multipleSelection = val
+const changeQueryDisabled = (disabled) => {
+    tableData.pageDisabled = disabled
+    tableData.queryDisabled = disabled
 }
 
-const changePage = (val) => {
-    state.currentPage = val
-    getList()
+const sizeChange = (pageSize) => {
+    tableData.page = 1
+    tableData.pageSize = pageSize
+    refresh()
 }
-// script setup 写法，需要通过 defineExpose 方法，将属性暴露出去，才能在父组件通过 ref 形式拿到本组件的内部参数
-defineExpose({ state: state, getList: getList })
+
+const currentChange = (page) => {
+    tableData.page = page
+    refresh()
+}
+
+const prevClick = (page) => {
+    tableData.page = page
+    refresh()
+}
+
+const nextClick = (page) => {
+    tableData.page = page
+    refresh()
+}
+
+refresh()
 </script>

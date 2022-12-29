@@ -22,7 +22,6 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
 import SystemRouter from '@/router/system/system'
 
 const menus = []

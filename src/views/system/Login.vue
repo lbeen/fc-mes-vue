@@ -74,7 +74,7 @@ const submit = () => {
     height: 500px;
     background-color: #fff;
     border-radius: 4px;
-    box-shadow: 0px 21px 41px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 21px 41px 0 rgba(0, 0, 0, 0.2);
 }
 
 .head {
@@ -96,21 +96,8 @@ const submit = () => {
     font-weight: bold;
 }
 
-.head .tips {
-    font-size: 12px;
-    color: #999;
-}
-
 .login-form {
     width: 70%;
     margin: 0 auto;
-}
-
-.login-form >>> .el-form--label-top .el-form-item__label {
-    padding: 0;
-}
-
-.login-form >>> .el-form-item {
-    margin-bottom: 0;
 }
 </style>

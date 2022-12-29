@@ -32,7 +32,7 @@
                     <el-input type="password" v-model.trim="formData.data.password" size="large"></el-input>
                 </el-form-item>
                 <el-form-item style="margin-top: 10px">
-                    <el-button style="width: 100%" type="primary" @click="submit" size="large">立即登录</el-button>
+                    <el-button style="width: 100%" type="primary" @click="submit" size="large">修改</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>

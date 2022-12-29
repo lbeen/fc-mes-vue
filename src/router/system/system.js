@@ -3,6 +3,11 @@ const routes = [ {
     title: '登录',
     path: '/login',
     component: () => import('@/views/system/Login.vue')
+}, {
+    name: 'log',
+    title: '系统日志',
+    path: '/menu/system/log',
+    component: () => import('@/views/system/Log.vue')
 },{
     path: '/',
     redirect: '/menu/introduce'
