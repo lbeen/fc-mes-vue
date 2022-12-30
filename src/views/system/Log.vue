@@ -38,27 +38,35 @@
             <el-table-column label="内容" align="center" prop="log_content"></el-table-column>
         </template>
     </page-table>
+
+    <!--
+
+
+    createTime: '',
+    level: '',
+    server: '',
+    serverPort: '',
+    serverIP: '',
+    clientIP: '',
+    user: '',
+    content: ''-->
     <el-drawer v-model="isShowDetail" title="日志详情" size="50%">
-        <el-descriptions>
-            <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-            <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-            <el-descriptions-item label="Place">Suzhou</el-descriptions-item>
-            <el-descriptions-item label="Remarks">
-                <el-tag size="small">School</el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="Address"
-            >No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu
-                Province
-            </el-descriptions-item
-            >
+        <el-descriptions :column="3" :style="blockMargin">
+            <el-descriptions-item label="时间">{{ formatDateTime(logDetail.createTime) }}</el-descriptions-item>
+            <el-descriptions-item label="级别">{{ logDetail.level === 0 ? '信息' : '错误' }}</el-descriptions-item>
+            <el-descriptions-item label="服务">{{ logDetail.server }}</el-descriptions-item>
+            <el-descriptions-item label="服务">{{ logDetail.serverIP }}</el-descriptions-item>
+            <el-descriptions-item label="服务">{{ logDetail.serverPort }}</el-descriptions-item>
+            <el-descriptions-item label="服务">{{ logDetail.user }}</el-descriptions-item>
+            <el-descriptions-item label="服务">{{ logDetail.content }}</el-descriptions-item>
         </el-descriptions>
     </el-drawer>
 </template>
 
 <script setup>
 import PageTable from '@/components/app/page-table.vue'
-import {queryLogPage} from '@/api/system/log'
-import {reactive, ref} from 'vue'
+import {queryLogById, queryLogPage} from '@/api/system/log'
+import {computed, reactive, ref} from 'vue'
 import Tips from '@/utils/Tips'
 import {format0OClock, formatDateTime} from '@/utils/date'
 
@@ -92,8 +100,30 @@ const paramFun = () => {
     }
 }
 
+const size = ref('')
+const blockMargin = computed(() => {
+    const marginMap = {
+        large: '32px',
+        default: '28px',
+        small: '24px',
+    }
+    return {
+        marginTop: marginMap[size.value] || marginMap.default,
+    }
+})
 const isShowDetail = ref(false)
-const rowClick = row => {
+const logDetail = ref({
+    createTime: '',
+    level: '',
+    server: '',
+    serverPort: '',
+    serverIP: '',
+    clientIP: '',
+    user: '',
+    content: ''
+})
+const rowClick = row => queryLogById(row.id, data => {
+    logDetail.value = data
     isShowDetail.value = true
-}
+})
 </script>
