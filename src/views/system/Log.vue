@@ -1,5 +1,5 @@
 <template>
-    <page-table :data-fun="dataFun" :param-fun="paramFun" query-on-load>
+    <page-table :data-fun="dataFun" :param-fun="paramFun" query-on-load :row-click="rowClick">
         <template #query="scope">
             <el-form inline class="demo-form-inline">
                 <el-form-item label="时间">
@@ -30,16 +30,35 @@
             <el-table-column label="时间" prop="create_time" align="center" width="165px"></el-table-column>
             <el-table-column label="服务" prop="server" align="center" width="75px"></el-table-column>
             <el-table-column label="用户" prop="operate_user" align="center" width="90px"></el-table-column>
-            <el-table-column label="级别" prop="log_level" align="center" width="70px"></el-table-column>
-            <el-table-column label="内容" prop="log_content" align="center"></el-table-column>
+            <el-table-column label="级别" align="center" width="70px">
+                <template v-slot="scope">
+                    {{ scope.row.log_level === 0 ? '信息' : '错误' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="内容" align="center" prop="log_content"></el-table-column>
         </template>
     </page-table>
+    <el-drawer v-model="isShowDetail" title="日志详情" size="50%">
+        <el-descriptions>
+            <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
+            <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
+            <el-descriptions-item label="Place">Suzhou</el-descriptions-item>
+            <el-descriptions-item label="Remarks">
+                <el-tag size="small">School</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="Address"
+            >No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu
+                Province
+            </el-descriptions-item
+            >
+        </el-descriptions>
+    </el-drawer>
 </template>
 
 <script setup>
 import PageTable from '@/components/app/page-table.vue'
 import {queryLogPage} from '@/api/system/log'
-import {reactive} from 'vue'
+import {reactive, ref} from 'vue'
 import Tips from '@/utils/Tips'
 import {format0OClock, formatDateTime} from '@/utils/date'
 
@@ -71,5 +90,10 @@ const paramFun = () => {
         user: param.user,
         content: param.content
     }
+}
+
+const isShowDetail = ref(false)
+const rowClick = row => {
+    isShowDetail.value = true
 }
 </script>

@@ -37,7 +37,7 @@ const changeMenuVisible = () => {
 }
 
 .main {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 50px);
     overflow: auto;
     padding: 10px;
 }
